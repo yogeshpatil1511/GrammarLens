@@ -16,7 +16,7 @@ A web app that checks grammar and spelling mistakes in sentences, paragraphs, an
 
 ### Steps
 ```bash
-git clone https://github.com/<your-username>/GrammarLens.git
+git clone https://github.com/yogeshpatil1511/GrammarLens.git
 cd GrammarLens
 docker-compose up --build -d
 ```
