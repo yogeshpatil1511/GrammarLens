@@ -5,9 +5,11 @@ app = Flask(__name__)
 
 LANGUAGETOOL_URL = "http://languagetool:8010/v2/check"
 
+
 @app.route("/")
 def home():
     return render_template("index.html")
+
 
 @app.route("/api/check", methods=["POST"])
 def check_text():
@@ -20,13 +22,16 @@ def check_text():
     try:
         response = requests.post(
             LANGUAGETOOL_URL,
-            data={"text": text, "language": "en-US"},
+            data={
+                "text": text,
+                "language": "en-US"
+            },
             timeout=15
         )
 
         result = response.json()
 
-        # DEBUG OUTPUT
+        # DEBUG LOGS
         print("=" * 60)
         print("LANGUAGETOOL RESPONSE")
         print("Errors Found:", len(result.get("matches", [])))
@@ -39,16 +44,16 @@ def check_text():
 
         for match in result.get("matches", []):
             original_phrase = text[
-                match["offset"]:match["offset"] + match["length"]
+                match["offset"]: match["offset"] + match["length"]
             ]
 
             suggestion = (
                 match["replacements"][0]["value"]
-                if match["replacements"]
+                if match.get("replacements")
                 else original_phrase
             )
 
-            explanation = match["message"]
+            explanation = match.get("message", "No explanation available")
 
             errors.append({
                 "original": original_phrase,
@@ -73,7 +78,9 @@ def check_text():
         })
 
     except Exception as e:
+        print("ERROR:", str(e))
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
