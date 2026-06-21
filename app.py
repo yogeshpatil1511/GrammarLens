@@ -23,15 +23,31 @@ def check_text():
             data={"text": text, "language": "en-US"},
             timeout=15
         )
+
         result = response.json()
+
+        # DEBUG OUTPUT
+        print("=" * 60)
+        print("LANGUAGETOOL RESPONSE")
+        print("Errors Found:", len(result.get("matches", [])))
+        print(result)
+        print("=" * 60)
 
         errors = []
         corrected_text = text
         offset_shift = 0
 
         for match in result.get("matches", []):
-            original_phrase = text[match["offset"]:match["offset"] + match["length"]]
-            suggestion = match["replacements"][0]["value"] if match["replacements"] else original_phrase
+            original_phrase = text[
+                match["offset"]:match["offset"] + match["length"]
+            ]
+
+            suggestion = (
+                match["replacements"][0]["value"]
+                if match["replacements"]
+                else original_phrase
+            )
+
             explanation = match["message"]
 
             errors.append({
@@ -42,7 +58,13 @@ def check_text():
 
             start = match["offset"] + offset_shift
             end = start + match["length"]
-            corrected_text = corrected_text[:start] + suggestion + corrected_text[end:]
+
+            corrected_text = (
+                corrected_text[:start]
+                + suggestion
+                + corrected_text[end:]
+            )
+
             offset_shift += len(suggestion) - match["length"]
 
         return jsonify({
