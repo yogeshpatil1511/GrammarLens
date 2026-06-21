@@ -12,7 +12,6 @@ A web app that checks grammar and spelling mistakes in sentences, paragraphs, an
 
 ### Prerequisites
 - Docker and Docker Compose installed
-- Git installed
 
 ### Steps
 ```bash
