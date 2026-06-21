@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   languagetool:
-    image: erikvl87/languagetool
+    image: silviof/docker-languagetool
     container_name: languagetool
     ports:
       - "8010:8010"
